@@ -16,5 +16,7 @@ isInView(elem, offsetTop, offsetRight, offsetBottom, offsetLeft)
 returns true or false
 
 Supports CSS style offset inputs
+
 isInView(elem, 10) = isInView(elem, 10, 10, 10, 10)
+
 isInView(elem, 10, 20) = isInView(elem, 10, 20, 10, 20)
