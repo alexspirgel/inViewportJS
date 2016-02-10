@@ -154,5 +154,22 @@
 <br/>
 <br/>
 <br/>
+<script type="text/javascript">
+var elem = document.getElementsByTagName('p')
+isInView(elem,{
+	type: "isInVeiw", // "inView", "inFullView"
+	viewportpadding: "0 0 0 0", // CSS style input, accepts negative values
+	elementPadding: "0 0 0 0", // CSS style input, accepts negative values
+	enterDelay: 0, // Delay in miliseconds for enter trigger
+	leaveDelay: 0, // Delay in miliseconds for leave trigger
+	enterCallback: function(){
+		// Enter callback code here
+	},
+	leaveCallback: function(){
+		// Leave callback code here
+	},
+	scrollInterval: 100 // Interval in miliseconds to check when scrolling
+});
+</script>
 </body>
 </html>

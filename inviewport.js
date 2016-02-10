@@ -5,7 +5,11 @@
 Version: 1.01 - 2/9/2016
 Written By: Alexander Spirgel - alexanderspirgel.com
 */
-
+function isInView(elem,options){
+    console.log(elem)
+    console.log(options)
+}
+/*
 // Check if elem is at least partially within viewport
 function isInView(elem, offsetTop, offsetRight, offsetBottom, offsetLeft){
     // Check for offsets
@@ -48,3 +52,4 @@ function isInFullView(elem, offsetTop, offsetRight, offsetBottom, offsetLeft){
         rect.right <= (window.innerWidth || $(window).width())
     );
 }
+*/
