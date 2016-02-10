@@ -2,9 +2,10 @@
 * inViewportJS *
 ****************/
 /*
-Version: 1.00 - 2/5/2016
+Version: 1.01 - 2/9/2016
 Written By: Alexander Spirgel - alexanderspirgel.com
 */
+
 // Check if elem is at least partially within viewport
 function isInView(elem, offsetTop, offsetRight, offsetBottom, offsetLeft){
     // Check for offsets
