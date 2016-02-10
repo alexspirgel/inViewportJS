@@ -5,10 +5,46 @@
 Version: 1.01 - 2/9/2016
 Written By: Alexander Spirgel - alexanderspirgel.com
 */
-function isInView(elem,options){
-    console.log(elem)
-    console.log(options)
-}
+;(function($){
+    var defaults = {
+        type: 'isInVeiw', // 'inView', 'inFullView'
+        viewportpadding: '0 0 0 0', // CSS style input viewport padding, accepts negative values
+        elementPadding: '0 0 0 0', // CSS style input element padding, accepts negative values
+        enterDelay: 0, // Delay in miliseconds for enter trigger
+        leaveDelay: 0, // Delay in miliseconds for leave trigger
+        enterCallback: function(){
+            // Enter callback code here
+        },
+        leaveCallback: function(){
+            // Leave callback code here
+        },
+        scrollInterval: 100 // Interval in miliseconds to check when scrolling
+    }
+    $.fn.isInView = function(options){
+        console.log(this)
+        console.log(options)
+        // Check for target element
+        if(this.length == 0) return this;
+        // Support mutltiple elements
+        if(this.length > 1){
+            this.each(function(){$(this).isInView(options)});
+            console.log("multiple trigger")
+            return this;
+        }
+        function formatCSS(strIn){
+            return strIn.splt(" ");
+            /*if(topVal != undefined && rightVal == undefined && bottomVal == undefined && leftVal == undefined) {rightVal = bottomVal = leftVal = topVal;}
+            if(topVal != undefined && bottomVal == undefined) {bottomVal = topVal;}
+            if(rightVal != undefined && leftVal == undefined) {leftVal = rightVal;}
+            if(topVal == undefined) {topVal = 0;}
+            if(rightVal == undefined) {rightVal = 0;}
+            if(bottomVal == undefined) {bottomVal = 0;}
+            if(leftVal == undefined) {leftVal = 0;}
+            var formatOut = [topVal,rightVal,bottomVal,leftVal];
+            return formatOut*/
+        }
+    }
+})(jQuery);
 /*
 // Check if elem is at least partially within viewport
 function isInView(elem, offsetTop, offsetRight, offsetBottom, offsetLeft){
