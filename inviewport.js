@@ -21,27 +21,43 @@ Written By: Alexander Spirgel - alexanderspirgel.com
         scrollInterval: 100 // Interval in miliseconds to check when scrolling
     }
     $.fn.isInView = function(options){
-        console.log(this)
-        console.log(options)
         // Check for target element
         if(this.length == 0) return this;
         // Support mutltiple elements
         if(this.length > 1){
             this.each(function(){$(this).isInView(options)});
-            console.log("multiple trigger")
             return this;
         }
-        function formatCSS(strIn){
-            return strIn.splt(" ");
-            /*if(topVal != undefined && rightVal == undefined && bottomVal == undefined && leftVal == undefined) {rightVal = bottomVal = leftVal = topVal;}
-            if(topVal != undefined && bottomVal == undefined) {bottomVal = topVal;}
-            if(rightVal != undefined && leftVal == undefined) {leftVal = rightVal;}
-            if(topVal == undefined) {topVal = 0;}
-            if(rightVal == undefined) {rightVal = 0;}
-            if(bottomVal == undefined) {bottomVal = 0;}
-            if(leftVal == undefined) {leftVal = 0;}
-            var formatOut = [topVal,rightVal,bottomVal,leftVal];
-            return formatOut*/
+        // Merge options with defaults
+        options = $.extend(defaults,options);
+        console.log(options)
+        function validateOptionInput(option,input){
+            var passFlag = false;
+            if(option == "type"){
+                if(input == "isInView" || input == "isInFullView"){
+                    passFlag = true;
+                }
+            }
+            if(option == "viewportpadding" || option == "elementPadding"){
+                var inputArray = input.split(" ");
+                // Remove empty array values caused by excessive spaces
+                inputArray = inputArray.filter(Boolean)
+                // Check for the right amount of values and that all characters are digits or spaces
+                if(inputArray.length >= 1 && inputArray.length <= 4 && input.match(/(?=\D)(\S)/g) == null){
+                    passFlag = true;
+                }
+            }
+            if(option == "enterDelay" || option == "leaveDelay" || option == "scrollInterval"){
+                // Check that all characters are digits
+                if(input.match(/(\D)/g) == null){
+                    passFlag = true;
+                }
+            }
+            if(!passFlag){
+                // Throw error
+                console.error('Error: option "' + option + '" value is invalid.');
+            }
+            return passFlag;
         }
     }
 })(jQuery);
