@@ -40,7 +40,26 @@ Written By: Alexander Spirgel - alexanderspirgel.com
         var init = function(){
             // Merge options with defaults
             var mergedOptions = $.extend(defaults,options);
-            console.log(checkInView(elem, mergedOptions));
+            // If options are valid
+            if(validateOptionInput("type", mergedOptions["type"]) &&
+            validateOptionInput("elementPadding", mergedOptions["elementPadding"]) &&
+            validateOptionInput("viewportpadding", mergedOptions["viewportpadding"]) &&
+            validateOptionInput("enterDelay", mergedOptions["enterDelay"]) &&
+            validateOptionInput("leaveDelay", mergedOptions["leaveDelay"]) &&
+            validateOptionInput("scrollInterval", mergedOptions["scrollInterval"])){
+                // Convert from CSS formatting
+                mergedOptions["elementPadding"] = formatCSS(mergedOptions["elementPadding"]);
+                mergedOptions["viewportpadding"] = formatCSS(mergedOptions["viewportpadding"]);
+                var lastScroll = 0;
+                $(window).scroll(function(){
+                    var now = +new Date;
+                    if (now - lastScroll > mergedOptions["scrollInterval"]){
+                        console.log(checkInView(elem, mergedOptions));
+                        lastScroll = now;
+                    }
+                });
+                console.log(checkInView(elem, mergedOptions));
+            }
         }
 
         // Split by ' ' and remove nulls
@@ -99,47 +118,40 @@ Written By: Alexander Spirgel - alexanderspirgel.com
             return objOut;
         }
         // Check if elem is within viewport
-        function checkInView(elem, options){
-            // If all relevant options are valid
-            if(validateOptionInput("type", options["type"]) &&
-            validateOptionInput("elementPadding", options["elementPadding"]) &&
-            validateOptionInput("viewportpadding", options["viewportpadding"]) &&
-            validateOptionInput("enterDelay", options["enterDelay"]) &&
-            validateOptionInput("leaveDelay", options["leaveDelay"]) &&
-            validateOptionInput("scrollInterval", options["scrollInterval"])){
-                var elementPaddingObj = formatCSS(options["elementPadding"]);
-                var viewportpaddingObj = formatCSS(options["viewportpadding"]);
-                // Convert from JQuery selector to normal JavaScript
-                if (typeof jQuery === "function" && elem instanceof jQuery){
-                    elem = elem[0];
-                }
-                // Set variable with outer boundaries of elem
-                var rect = elem.getBoundingClientRect();
-                if(options["type"] == "isInFullView"){
-                    // Return true if all boundaries are within viewport, accounting for padding
-                    return (
-                        (rect.top - elementPaddingObj["topVal"]) >= (0 - viewportpaddingObj["topVal"]) &&
-                        (rect.bottom + elementPaddingObj["bottomVal"]) <= (window.innerHeight + viewportpaddingObj["bottomVal"]) &&
-                        (rect.left - elementPaddingObj["leftVal"]) >= (0 - viewportpaddingObj["leftVal"]) &&
-                        (rect.right + elementPaddingObj["rightVal"]) <= (window.innerWidth + viewportpaddingObj["rightVal"])
-                    );
-                }
-                else{
-                    // Return true if one or more boundary is within viewport, accounting for padding
-                    return (
-                        ( 
-                            (rect.top - elementPaddingObj["topVal"]) < (window.innerHeight + viewportpaddingObj["bottomVal"]) &&
-                            (rect.bottom + elementPaddingObj["bottomVal"]) > (0 - viewportpaddingObj["topVal"])
-                        ) &&
-                        (
-                            (rect.left - elementPaddingObj["leftVal"]) < (window.innerWidth + viewportpaddingObj["rightVal"]) &&
-                            (rect.right + elementPaddingObj["rightVal"]) > (0 - viewportpaddingObj["leftVal"])
-                        )        
-                    );
-                }
+        function checkInView(elem, mergedOptions){
+            // Convert from JQuery selector to normal JavaScript
+            if (typeof jQuery === "function" && elem instanceof jQuery){
+                elem = elem[0];
+            }
+            // Set variable with outer boundaries of elem
+            var rect = elem.getBoundingClientRect();
+            if(mergedOptions["type"] == "isInFullView"){
+                // Return true if all boundaries are within viewport, accounting for padding
+                return (
+                    (rect.top - mergedOptions["elementPadding"]["topVal"]) >= (0 - mergedOptions["viewportpadding"]["topVal"]) &&
+                    (rect.bottom + mergedOptions["elementPadding"]["bottomVal"]) <= (window.innerHeight + mergedOptions["viewportpadding"]["bottomVal"]) &&
+                    (rect.left - mergedOptions["elementPadding"]["leftVal"]) >= (0 - mergedOptions["viewportpadding"]["leftVal"]) &&
+                    (rect.right + mergedOptions["elementPadding"]["rightVal"]) <= (window.innerWidth + mergedOptions["viewportpadding"]["rightVal"])
+                );
+            }
+            else{
+                // Return true if one or more boundary is within viewport, accounting for padding
+                return (
+                    ( 
+                        (rect.top - mergedOptions["elementPadding"]["topVal"]) < (window.innerHeight + mergedOptions["viewportpadding"]["bottomVal"]) &&
+                        (rect.bottom + mergedOptions["elementPadding"]["bottomVal"]) > (0 - mergedOptions["viewportpadding"]["topVal"])
+                    ) &&
+                    (
+                        (rect.left - mergedOptions["elementPadding"]["leftVal"]) < (window.innerWidth + mergedOptions["viewportpadding"]["rightVal"]) &&
+                        (rect.right + mergedOptions["elementPadding"]["rightVal"]) > (0 - mergedOptions["viewportpadding"]["leftVal"])
+                    )        
+                );
             }
         }
+        function adjustClasses(elem){
+
+        }
         // Run it
-        init();
+        return init();
     }
 })(jQuery);
