@@ -2,23 +2,28 @@
 * inViewportJS *
 ****************/
 /*
-Version: 1.10 - 2/14/2016
+Version: 1.20 - 4/13/2016
 Written By: Alexander Spirgel - alexanderspirgel.com
 */
 ;(function($){
+    // Default set of options that will be used unless set upon initialization
     var defaults = {
         'type': 'isInView', // 'inView', 'inFullView'
-        'elementPadding': '0 0 0 0', // CSS style input element padding, accepts negative values
-        'viewportpadding': '0 0 0 0', // CSS style input viewport padding, accepts negative values
-        'enterDelay': 0, // Delay in miliseconds for enter trigger
-        'leaveDelay': 0, // Delay in miliseconds for leave trigger
+        'elementOffsetTop': 0, // Element offset top, accepts negative values
+        'elementOffsetRight': 0, // Element offset right pixel value, accepts negative values
+        'elementOffsetBottom': 0, // Element offset bottom pixel value, accepts negative values
+        'elementOffsetLeft': 0, // Element offset left pixel value, accepts negative values
+        'viewportOffsetTop': 0, // Viewport offset top pixel value, accepts negative values
+        'viewportOffsetRight': 0, // Viewport offset right pixel value, accepts negative values
+        'viewportOffsetBottom': 0, // Viewport offset bottom pixel value, accepts negative values
+        'viewportOffsetLeft': 0, // Viewport offset left pixel value, accepts negative values
         'enterCallback': function(){
             // Enter callback code here
         },
         'leaveCallback': function(){
             // Leave callback code here
         },
-        'scrollInterval': 100 // Interval in miliseconds to check when scrolling
+        'checkInterval': 100 // Frequency interval in miliseconds to check
     }
     $.fn.isInView = function(options){
         // Check for target element
@@ -30,92 +35,72 @@ Written By: Alexander Spirgel - alexanderspirgel.com
         }
         // Set a reference to chosen element
         var elem = this;
-
-        /*
-        $(window).bind('resize', resizeWindow);
-        $(window).unbind('resize', resizeWindow);
-        */
-
         // Initialize
         var init = function(){
             // Merge options with defaults
             var mergedOptions = $.extend(defaults,options);
+            // Initialize optionsValid flag
+            var optionsValid = true;
+            // Validate all inputs
+            for(option in mergedOptions){
+                if(!validateOptionInput(option, mergedOptions[option])){
+                    optionsValid = false;
+                }
+            }
             // If options are valid
-            if(validateOptionInput("type", mergedOptions["type"]) &&
-            validateOptionInput("elementPadding", mergedOptions["elementPadding"]) &&
-            validateOptionInput("viewportpadding", mergedOptions["viewportpadding"]) &&
-            validateOptionInput("enterDelay", mergedOptions["enterDelay"]) &&
-            validateOptionInput("leaveDelay", mergedOptions["leaveDelay"]) &&
-            validateOptionInput("scrollInterval", mergedOptions["scrollInterval"])){
-                // Convert from CSS formatting
-                mergedOptions["elementPadding"] = formatCSS(mergedOptions["elementPadding"]);
-                mergedOptions["viewportpadding"] = formatCSS(mergedOptions["viewportpadding"]);
+            if(optionsValid){
                 var lastScroll = 0;
                 $(window).scroll(function(){
+                    // Get the current Time
                     var now = +new Date;
-                    if (now - lastScroll > mergedOptions["scrollInterval"]){
-                        console.log(checkInView(elem, mergedOptions));
+                    // If enough time has passed
+                    if (now - lastScroll > mergedOptions["checkInterval"]){
+                        // Run check on scroll
+                        adjustClasses(elem, checkInView(elem, mergedOptions), mergedOptions);
+                        // Reset scroll time
                         lastScroll = now;
                     }
                 });
-                console.log(checkInView(elem, mergedOptions));
+                var lastResize = 0;
+                $(window).resize(function(){
+                    // Get the current Time
+                    var now = +new Date;
+                    // If enough time has passed
+                    if (now - lastResize > mergedOptions["checkInterval"]){
+                        // Run check on resize
+                        adjustClasses(elem, checkInView(elem, mergedOptions), mergedOptions);
+                        // Reset scroll time
+                        lastResize = now;
+                    }
+                });
+                // Run initial check
+                adjustClasses(elem, checkInView(elem, mergedOptions), mergedOptions);
             }
-        }
-
-        // Split by ' ' and remove nulls
-        function splitSpace(inputStr){
-            var inputArray = inputStr.split(" ");
-            // Remove empty array values caused by excessive spaces
-            inputArray = inputArray.filter(Boolean)
-            return inputArray;
         }
         // Input validation
         function validateOptionInput(option, input){
             var passFlag = false;
             if(option == 'type'){
+                // Check for valid in view type
                 if(input == 'isInView' || input == 'isInFullView'){
                     passFlag = true;
                 }
             }
-            else if(option == "viewportpadding" || option == "elementPadding"){
-                var inputArray = splitSpace(input);
-                // Check for the right amount of values and that all characters are digits or spaces
-                if(inputArray.length >= 1 && inputArray.length <= 4 && input.match(/(?=\D)(\S)/g) == null){
+            else if(option == "elementOffsetTop" || option == "elementOffsetRight" || option == "elementOffsetBottom" || option == "elementOffsetLeft" || option == "viewportOffsetTop" || option == "viewportOffsetRight" || option == "viewportOffsetBottom" || option == "viewportOffsetLeft" || option == "checkInterval"){
+                // Check that input is an integer
+                if(!isNaN(input) && parseInt(Number(input)) == input && !isNaN(parseInt(input, 10))){
                     passFlag = true;
                 }
             }
-            else if(option == "enterDelay" || option == "leaveDelay" || option == "scrollInterval"){
-                // Check that input is an integer
-                if(input === parseInt(input, 10)){
-                    passFlag = true;
-                }
+            else if(option == "enterCallback" || option == "leaveCallback"){
+                // Do nothing. These values should be javascript which should throw their own errors
+                passFlag = true;
             }
             if(!passFlag){
                 // Throw error
-                console.error('Error: option "' + option + '" value is invalid.');
+                console.error('Error: inViewportJS option "' + option + '" value is invalid.');
             }
             return passFlag;
-        }
-        // CSS Style formatting
-        function formatCSS(str){
-            var arrLabels = ["topVal","rightVal","bottomVal","leftVal"];
-            var arrVals = splitSpace(str);
-            arrVals = arrVals.filter(Boolean)
-            if(arrVals.length == 1){
-                arrVals[1] = arrVals[2] = arrVals[3] = arrVals[0];
-            }
-            else if(arrVals.length == 2){
-                arrVals[2] = arrVals[0];
-                arrVals[3] = arrVals[1];
-            }
-            else if(arrVals.length == 3){
-                arrVals[3] = arrVals[1];
-            }
-            var objOut = {};
-            for(i = 0;i < 4;i++){
-                objOut[arrLabels[i]] = parseInt(arrVals[i]);
-            }
-            return objOut;
         }
         // Check if elem is within viewport
         function checkInView(elem, mergedOptions){
@@ -126,30 +111,58 @@ Written By: Alexander Spirgel - alexanderspirgel.com
             // Set variable with outer boundaries of elem
             var rect = elem.getBoundingClientRect();
             if(mergedOptions["type"] == "isInFullView"){
-                // Return true if all boundaries are within viewport, accounting for padding
+                // Return true if all boundaries are within viewport, accounting for offset
                 return (
-                    (rect.top - mergedOptions["elementPadding"]["topVal"]) >= (0 - mergedOptions["viewportpadding"]["topVal"]) &&
-                    (rect.bottom + mergedOptions["elementPadding"]["bottomVal"]) <= (window.innerHeight + mergedOptions["viewportpadding"]["bottomVal"]) &&
-                    (rect.left - mergedOptions["elementPadding"]["leftVal"]) >= (0 - mergedOptions["viewportpadding"]["leftVal"]) &&
-                    (rect.right + mergedOptions["elementPadding"]["rightVal"]) <= (window.innerWidth + mergedOptions["viewportpadding"]["rightVal"])
+                    (rect.top) >= (0) &&
+                    (rect.bottom) <= (window.innerHeight) &&
+                    (rect.left) >= (0) &&
+                    (rect.right) <= (window.innerWidth)
                 );
             }
             else{
-                // Return true if one or more boundary is within viewport, accounting for padding
+                // Return true if one or more boundary is within viewport, accounting for offset
                 return (
                     ( 
-                        (rect.top - mergedOptions["elementPadding"]["topVal"]) < (window.innerHeight + mergedOptions["viewportpadding"]["bottomVal"]) &&
-                        (rect.bottom + mergedOptions["elementPadding"]["bottomVal"]) > (0 - mergedOptions["viewportpadding"]["topVal"])
+                        (rect.top) < (window.innerHeight) &&
+                        (rect.bottom) > (0)
                     ) &&
                     (
-                        (rect.left - mergedOptions["elementPadding"]["leftVal"]) < (window.innerWidth + mergedOptions["viewportpadding"]["rightVal"]) &&
-                        (rect.right + mergedOptions["elementPadding"]["rightVal"]) > (0 - mergedOptions["viewportpadding"]["leftVal"])
+                        (rect.left) < (window.innerWidth) &&
+                        (rect.right) > (0)
                     )        
                 );
             }
         }
-        function adjustClasses(elem){
-
+        function adjustClasses(elem, isVisible, options){
+            //adjust classes
+            if(isVisible){
+                if(!elem.hasClass('ivp-viewing')){
+                    elem.addClass('ivp-viewing');
+                    // Run enter callback
+                   options.enterCallback();
+                }
+                if(!elem.hasClass('ivp-viewed')){
+                    elem.addClass('ivp-viewed');
+                }
+                if(elem.hasClass('ivp-unviewed')){
+                    elem.removeClass('ivp-unviewed');
+                }
+            }
+            else{
+                if(elem.hasClass('ivp-viewing')){
+                    elem.removeClass('ivp-viewing');
+                    // Run leave callback
+                    options.leaveCallback();
+                }
+                if(!elem.hasClass('ivp-viewed') && !elem.hasClass('ivp-unviewed')){
+                    elem.addClass('ivp-unviewed');
+                }
+            }
+            /*
+                'ivp-unviewed' - never been viewed
+                'ivp-viewing' - currently in view
+                'ivp-viewed' - has been viewed
+            */
         }
         // Run it
         return init();
