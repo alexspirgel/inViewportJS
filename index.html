@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8"/>
+		<meta charset="utf-8" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script src="inviewport.js"></script>
+		<style type="text/css">
+			p.vp-unviewed{
+				background-color: red;
+			}
+			p.vp-viewed{
+				background-color: blue;
+			}
+			p.vp-viewing{
+				background-color: green;
+			}
+		</style>
 	</head>
 	<body>
 		<br/>
@@ -136,75 +147,10 @@
 		<br/>
 		<br/>
 		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<p>test2 content</p>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
 		<script type="text/javascript">
-		$('p').isInView();
+		$('p').isInView({
+			'viewportOffsetBottom':200
+		});
 		</script>
 	</body>
 </html>
