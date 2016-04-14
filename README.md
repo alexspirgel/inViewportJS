@@ -17,15 +17,22 @@ These are the classes that are applied to the element:
 ###Options
 Here are the options and their default values:
 
-`'type': 'inView', // 'inView', 'inFullView'
-'viewportOffsetTop': 0, // Viewport offset top pixel value, accepts negative values
-'viewportOffsetRight': 0, // Viewport offset right pixel value, accepts negative values
-'viewportOffsetBottom': 0, // Viewport offset bottom pixel value, accepts negative values
-'viewportOffsetLeft': 0, // Viewport offset left pixel value, accepts negative values
-'enterCallback': function(){
+`'type': 'inView' // 'inView', 'inFullView'`
+
+`'viewportOffsetTop': 0 // Viewport offset top pixel value`
+
+`'viewportOffsetRight': 0 // Viewport offset right pixel value`
+
+`'viewportOffsetBottom': 0 // Viewport offset bottom pixel value`
+
+`'viewportOffsetLeft': 0 // Viewport offset left pixel value`
+
+`'enterCallback': function(){
     // Enter callback code here
-},
-'leaveCallback': function(){
+}`
+
+`'leaveCallback': function(){
     // Leave callback code here
-},
-'checkInterval': 200 // Frequency interval in miliseconds to check`
+}`
+
+`'checkInterval': 200 // Frequency interval in miliseconds to check`
