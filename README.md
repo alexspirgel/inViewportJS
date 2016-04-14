@@ -14,6 +14,8 @@ These are the classes that are applied to the element:
 * 'vp-viewing'
 * 'vp-viewed'
 
+This script requires jQuery.
+
 ###Options
 Here are the options and their default values:
 

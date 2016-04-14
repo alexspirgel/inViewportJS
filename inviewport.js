@@ -26,7 +26,7 @@ Written By: Alexander Spirgel - alexanderspirgel.com
         if(this.length == 0) return this;
         // Support mutltiple elements
         if(this.length > 1){
-            this.each(function(){$(this).inView(options)});
+            this.each(function(){$(this).isInView(options)});
             return this;
         }
         // Set a reference to chosen element
