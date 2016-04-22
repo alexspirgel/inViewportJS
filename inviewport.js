@@ -19,7 +19,7 @@ Written By: Alexander Spirgel - alexanderspirgel.com
         'leaveCallback': function(){
             // Leave callback code here
         },
-        'checkInterval': 200 // Frequency interval in miliseconds to check
+        'checkInterval': 100 // Frequency interval in miliseconds to check
     }
     $.fn.isInView = function(options){
         // Check for target element
@@ -134,7 +134,7 @@ Written By: Alexander Spirgel - alexanderspirgel.com
                 if(!elem.hasClass('vp-viewing')){
                     elem.addClass('vp-viewing');
                     // Run enter callback
-                   options.enterCallback();
+                   options.enterCallback(elem);
                 }
                 if(!elem.hasClass('vp-viewed')){
                     elem.addClass('vp-viewed');
@@ -147,7 +147,7 @@ Written By: Alexander Spirgel - alexanderspirgel.com
                 if(elem.hasClass('vp-viewing')){
                     elem.removeClass('vp-viewing');
                     // Run leave callback
-                    options.leaveCallback();
+                    options.leaveCallback(elem);
                 }
                 if(!elem.hasClass('vp-viewed') && !elem.hasClass('vp-unviewed')){
                     elem.addClass('vp-unviewed');
