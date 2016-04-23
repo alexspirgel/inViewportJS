@@ -2,7 +2,7 @@
 * inViewportJS *
 ****************/
 /*
-Version: 1.20 - 4/13/2016
+Version: 1.21 - 4/22/2016
 Written By: Alexander Spirgel - alexanderspirgel.com
 */
 ;(function($){
